@@ -59,8 +59,8 @@ int buffer_append_right(buffer_t *self, uint8_t *str, size_t len)
 
 int buffer_pop_left(buffer_t *self, size_t len)
 {
-    memmove(self->data, self->data + len, self->len - len);
     self->len -= len;
+    memmove(self->data, self->data + len, self->len);
     if (self->cap > (2 * self->len)) // pop了很多数据的话可以适当减少cap
     {
         size_t dst = self->len + 10; // 缩小
