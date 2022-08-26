@@ -35,7 +35,7 @@ void ringbuffer_del(ringbuffer_t **self)
 
 int ringbuffer_append(ringbuffer_t *self, uint8_t *str, size_t len)
 {
-    if ((ringbuffer_get_size(self) + len) > self->cap) // 已有长度加上他比cap还大 塞不进去了 cap不可能扩大的
+    if ((ringbuffer_get_size(self) + len) > (self->cap-1)) // 已有长度加上他比cap还大 塞不进去了 cap不可能扩大的 -1是为了不重合
     {
         return -1;
     }

@@ -20,7 +20,7 @@
 typedef struct ringbuffer_s
 {
     uint8_t *data; // 底层数据指针
-    size_t cap;   // 底层buf大小
+    size_t cap;   // 底层buf大小  实际上只能近cap-1
     uint8_t *head; // 头
     uint8_t *tail; // 尾部  // 长度就是尾部减去头部
 } ringbuffer_t;
@@ -39,7 +39,7 @@ void ringbuffer_del(ringbuffer_t **self);
 
 inline size_t ringbuffer_get_size(ringbuffer_t *self)
 {
-    if (self->tail >= self->head)
+    if (self->tail >= self->head) // 指针重叠的时候 大小视为0
     {
         return self->tail - self->head;
     }
