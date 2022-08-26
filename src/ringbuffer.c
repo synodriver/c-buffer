@@ -33,9 +33,23 @@ void ringbuffer_del(ringbuffer_t **self)
     }
 }
 
+void ringbuffer_copy_into(ringbuffer_t *self, uint8_t *dst)
+{
+    if (self->tail >= self->head) // 没有反转
+    {
+        memcpy(dst, self->head, self->tail - self->head);
+    }
+    else
+    {
+        memcpy(dst, self->head, self->data+self->cap-self->head);
+        memcpy(dst, self->data, self->tail-self->data);
+    }
+}
+
+
 int ringbuffer_append(ringbuffer_t *self, uint8_t *str, size_t len)
 {
-    if ((ringbuffer_get_size(self) + len) > (self->cap-1)) // 已有长度加上他比cap还大 塞不进去了 cap不可能扩大的 -1是为了不重合
+    if ((ringbuffer_get_size(self) + len) > (self->cap - 1)) // 已有长度加上他比cap还大 塞不进去了 cap不可能扩大的 -1是为了不重合
     {
         return -1;
     }
