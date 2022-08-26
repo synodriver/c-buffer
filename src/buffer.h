@@ -6,6 +6,9 @@
 #define BUFFER_REALLOC realloc
 #define BUFFER_FREE free
 #endif /* BUFFER_MALLOC */
+#if BUFFER_MALLOC==PyMem_Malloc
+#include "Python.h"
+#endif
 
 #include <stdio.h>
 #include <stdint.h>
