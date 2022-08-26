@@ -13,6 +13,9 @@ ringbuffer_t *ringbuffer_new(size_t cap)
         BUFFER_FREE(self);
         return NULL;
     }
+    self->cap = cap;
+    self->head = self->data;
+    self->tail = self->data;
     return self;
 }
 
@@ -32,38 +35,38 @@ void ringbuffer_del(ringbuffer_t **self)
 
 int ringbuffer_append(ringbuffer_t *self, uint8_t *str, size_t len)
 {
-    if ((ringbuffer_get_size(self) + len)> self->cap) // 已有长度加上他比cap还大 塞不进去了 cap不可能扩大的
+    if ((ringbuffer_get_size(self) + len) > self->cap) // 已有长度加上他比cap还大 塞不进去了 cap不可能扩大的
     {
         return -1;
     }
     if ((self->tail + len) > (self->data + self->cap)) // 要回转了
     {
         size_t delta = (self->tail + len) - (self->data + self->cap); // 这一部分要写到前面了
-        memcpy(self->tail, str, len-delta); // 剩下的写到后面
-        memcpy(self->data, str+len-delta, delta); // 写到前面
-        self->tail = self->data+delta;
+        memcpy(self->tail, str, len - delta); // 剩下的写到后面
+        memcpy(self->data, str + len - delta, delta); // 写到前面
+        self->tail = self->data + delta;
     }
     else  // 不用回转
     {
         memcpy(self->tail, str, len);
-        self->tail+=len;
+        self->tail += len;
     }
     return 0;
 }
 
 int ringbuffer_pop(ringbuffer_t *self, size_t len)
 {
-    if(ringbuffer_get_size(self)<len)  // 已有长度小于要pop的 没门
+    if (ringbuffer_get_size(self) < len)  // 已有长度小于要pop的 没门
     {
         return -1;
     }
-    if((self->head+len) > (self->data+self->cap)) // 要回转了
+    if ((self->head + len) > (self->data + self->cap)) // 要回转了
     {
         self->head = self->head + len - self->cap;
     }
     else
     {
-        self->head+=len;
+        self->head += len;
     }
     return 0;
 }
