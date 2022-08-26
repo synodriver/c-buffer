@@ -59,6 +59,10 @@ int buffer_append_right(buffer_t *self, uint8_t *str, size_t len)
 
 int buffer_pop_left(buffer_t *self, size_t len)
 {
+    if(len>self->len) // 比自己还长 应该报错
+    {
+        return -1;
+    }
     self->len -= len;
     memmove(self->data, self->data + len, self->len);
     if (self->cap > (2 * self->len)) // pop了很多数据的话可以适当减少cap
